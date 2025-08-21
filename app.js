@@ -75,49 +75,41 @@ function renderItems(items){
 }
 
 // جلب متجر اليوم
-async function loadShop(){
-  try{
-    hideStatus();
-    titleEl.textContent = "متجر اليوم";
-    createSkeletons(16);
+async function loadItemShop() {
+  try {
+    const response = await fetch(API_URL, {
+      headers: {
+        Authorization: API_KEY
+      }
+    });
 
-    // كاش بسيط لمدة 30 دقيقة
-    const now = Date.now();
-    const cached = localStorage.getItem("shop_cache_v1");
-    if(cached){
-      try{
-        const obj = JSON.parse(cached);
-        if(obj.t && (now - obj.t) < 30*60*1000 && Array.isArray(obj.items)){
-          renderItems(obj.items);
-          return; // كفاية الكاش
-        }
-      }catch{}
+    if (!response.ok) {
+      throw new Error("API Error: " + response.status);
     }
 
-    const res = await fetch(API_SHOP, { cache: "no-store" });
-    if(!res.ok) throw new Error("فشل الاتصال بالـ API");
-    const json = await res.json();
+    const data = await response.json();
+    const shopContainer = document.getElementById("shop");
+    shopContainer.innerHTML = "";
 
-    const entries = json?.data?.entries || [];
-    const items = entries.flatMap(e => e?.items || []).filter(Boolean).map(it => ({
-      id: it.id,
-      name: it.name,
-      rarity: it.rarity,
-      images: it.images,
-      series: it.series
-    }));
-
-    // إزالة التكرارات حسب id
-    const unique = Array.from(new Map(items.map(x => [x.id, x])).values());
-
-    renderItems(unique);
-    localStorage.setItem("shop_cache_v1", JSON.stringify({ t: now, items: unique }));
-  }catch(err){
-    console.error(err);
-    showStatus("تعذّر تحميل متجر اليوم. جرّب تحديث الصفحة أو تعطيل مانع الإعلانات مؤقتاً.");
-    clearGrid();
+    data.shop.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <img src="${item.displayAssets[0].url}" alt="${item.displayName}">
+        <h3>${item.displayName}</h3>
+        <p>Price: ${item.price.finalPrice} V-Bucks</p>
+        <a href="https://luckymarket.net/luckyhelmet" target="_blank">اشتري الآن</a>
+      `;
+      shopContainer.appendChild(div);
+    });
+  } catch (error) {
+    document.getElementById("shop").innerHTML = 
+      "<p>تعذّر تحميل متجر اليوم. جرّب تحديث الصفحة أو تحقق من API Key.</p>";
+    console.error(error);
   }
 }
+
+loadItemShop();
 
 // البحث
 async function doSearch(name, rarity){
