@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="سكنات فورتنايت بالعربي - المتجر اليومي | روابط شراء مباشرة">
+  <title>سكنات فورتنايت - المتجر اليومي</title>
+  <style>
+    body { font-family: Arial, sans-serif; direction: rtl; text-align: center; background: #111; color: #fff; }
+    .skin-card { border: 1px solid #444; margin: 10px; padding: 15px; border-radius: 10px; display: inline-block; background: #222; width: 200px; }
+    .skin-card img { width: 100%; border-radius: 8px; }
+    a.buy { display: block; margin-top: 10px; padding: 10px; background: #ff4757; color: #fff; text-decoration: none; border-radius: 8px; }
+    a.buy:hover { background: #e84118; }
+    header { padding: 20px; background: #222; margin-bottom: 20px; }
+    footer { margin-top: 40px; padding: 20px; background: #222; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛒 سكنات فورتنايت - المتجر اليومي</h1>
+    <p>تصفح أحدث السكنات واشتري مباشرة</p>
+  </header>
+
+  <div id="skins"></div>
+
+  <footer>
+    <p>© 2025 جميع الحقوق محفوظة | <a href="https://luckymarket.net/luckyhelmet" style="color:#ff4757">متجر لاكي ماركت</a></p>
+  </footer>
+
+  <script>
+    async function fetchSkins() {
+      const response = await fetch('https://fortnite-api.com/v2/shop/br');
+      const data = await response.json();
+      const container = document.getElementById('skins');
+
+      data.data.featured.entries.forEach(entry => {
+        entry.items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'skin-card';
+          card.innerHTML = `
+            <img src="${item.images.icon}" alt="${item.name}" />
+            <h3>${item.name}</h3>
+            <a class="buy" href="https://luckymarket.net/luckyhelmet" target="_blank">🔗 اشتري الآن</a>
+          `;
+          container.appendChild(card);
+        });
+      });
+    }
+    fetchSkins();
+  </script>
+</body>
+</html>
