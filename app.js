@@ -1,6 +1,6 @@
 // إعدادات عامة
-const API_SHOP = "2f08e4d7-7108e7b5-c41f7e58-7f701a86";
-const API_SEARCH_ALL = "https://fortniteapi.io/v2/shop?lang=en";
+const API_KEY = "2f08e4d7-7108e7b5-c41f7e58-7f701a86";
+const API_URL = "https://fortniteapi.io/v2/shop?lang=en";
 const PURCHASE_URL = "https://luckymarket.net/luckyhelmet";
 
 const grid = document.getElementById("grid");
